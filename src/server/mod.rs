@@ -119,7 +119,11 @@ impl DevServer {
         debouncer.watcher().watch(&root, RecursiveMode::Recursive)?;
         
         // Spawn a thread to handle file change events
+        // The debouncer is moved into the thread to keep it alive
         std::thread::spawn(move || {
+            // Keep debouncer alive for the duration of the watcher
+            let _debouncer = debouncer;
+            
             loop {
                 match rx.recv() {
                     Ok(Ok(events)) => {
@@ -137,9 +141,6 @@ impl DevServer {
                 }
             }
         });
-        
-        // Keep the debouncer alive
-        std::mem::forget(debouncer);
         
         Ok(())
     }

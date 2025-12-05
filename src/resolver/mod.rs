@@ -2,7 +2,6 @@
 //!
 //! Handles resolving import specifiers to actual file paths.
 
-use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -27,10 +26,8 @@ static DYNAMIC_IMPORT_REGEX: Lazy<Regex> = Lazy::new(|| {
 /// Module resolver
 pub struct Resolver {
     /// Project configuration
+    #[allow(dead_code)]
     config: Arc<Config>,
-    
-    /// Cache of resolved paths
-    cache: HashMap<(PathBuf, String), Option<PathBuf>>,
 }
 
 impl Resolver {
@@ -38,7 +35,6 @@ impl Resolver {
     pub fn new(config: Arc<Config>) -> Result<Self> {
         Ok(Self {
             config,
-            cache: HashMap::new(),
         })
     }
     

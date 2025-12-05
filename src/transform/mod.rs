@@ -119,7 +119,7 @@ module.exports = {{}};
         let mut in_string = false;
         let mut string_char = '"';
         let mut in_template = false;
-        let mut template_depth: i32 = 0;
+        let mut template_depth: usize = 0;
         
         while let Some(c) = chars.next() {
             // Handle string literals

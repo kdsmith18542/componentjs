@@ -122,6 +122,8 @@ impl Bundler {
     }
     
     /// Process a single module and its dependencies
+    /// 
+    /// Uses Box::pin for async recursion to avoid infinite type size issues
     async fn process_module(&self, path: &PathBuf, is_entry: bool) -> Result<ModuleId> {
         let canonical_path = fs::canonicalize(path)
             .with_context(|| format!("Failed to resolve module path: {}", path.display()))?;
@@ -160,7 +162,7 @@ impl Bundler {
             graph.add_module(module)
         };
         
-        // Process dependencies recursively
+        // Process dependencies recursively (Box::pin needed for async recursion)
         for dep in dependencies {
             let resolved = self.resolver.resolve(&dep, &canonical_path)?;
             if let Some(resolved_path) = resolved {
